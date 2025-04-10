@@ -136,11 +136,16 @@ const Profile = () => {
     fat: 30,
   });
 
+  // New state for editing calories
+  const [editingCalories, setEditingCalories] = useState(false);
+  const [tempCalories, setTempCalories] = useState(2000);
+
   // Load user profile data
   useEffect(() => {
     if (currentUser?.profile) {
       setProfile(currentUser.profile);
       setTempMacros(currentUser.profile.target_macros_pct);
+      setTempCalories(currentUser.profile.target_daily_calories);
     }
   }, [currentUser]);
 
@@ -243,18 +248,32 @@ const Profile = () => {
     }
   };
 
-  // Handle calories change
-  const handleCaloriesChange = async (event, newValue) => {
+  // Handle calories edit
+  const handleStartEditingCalories = () => {
+    setTempCalories(profile.target_daily_calories);
+    setEditingCalories(true);
+  };
+
+  const handleCancelEditingCalories = () => {
+    setEditingCalories(false);
+  };
+
+  const handleTempCaloriesChange = (event, newValue) => {
+    setTempCalories(newValue);
+  };
+
+  const handleSaveCalories = async () => {
     try {
       setLoading(true);
       setSaveSuccess(false);
 
-      await userApi.updateGoals(newValue, profile.target_macros_pct);
+      await userApi.updateGoals(tempCalories, profile.target_macros_pct);
       await fetchUserProfile();
 
+      setEditingCalories(false);
       setSaveSuccess(true);
     } catch (error) {
-      console.error("Error updating target calories:", error);
+      console.error("Error updating calories:", error);
     } finally {
       setLoading(false);
     }
@@ -579,18 +598,53 @@ const Profile = () => {
             <TabPanel value={activeTab} index={2}>
               <Grid container spacing={3}>
                 <Grid item xs={12}>
-                  <Typography variant="h6" gutterBottom>
-                    Daily Calorie Target
-                  </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      mb: 2,
+                    }}
+                  >
+                    <Typography variant="h6">Daily Calorie Target</Typography>
+                    {!editingCalories ? (
+                      <Button
+                        startIcon={<Edit />}
+                        onClick={handleStartEditingCalories}
+                        disabled={loading}
+                      >
+                        Edit
+                      </Button>
+                    ) : (
+                      <Box>
+                        <IconButton
+                          color="primary"
+                          onClick={handleSaveCalories}
+                          disabled={loading}
+                        >
+                          <Save />
+                        </IconButton>
+                        <IconButton
+                          color="error"
+                          onClick={handleCancelEditingCalories}
+                          disabled={loading}
+                        >
+                          <Cancel />
+                        </IconButton>
+                      </Box>
+                    )}
+                  </Box>
                   <Box sx={{ px: 2, py: 1 }}>
                     <Slider
-                      value={profile.target_daily_calories}
+                      value={
+                        editingCalories
+                          ? tempCalories
+                          : profile.target_daily_calories
+                      }
                       min={1000}
                       max={4000}
                       step={50}
-                      onChange={(e, newValue) =>
-                        handleCaloriesChange(e, newValue)
-                      }
+                      onChange={handleTempCaloriesChange}
                       valueLabelDisplay="auto"
                       marks={[
                         { value: 1000, label: "1000" },
@@ -598,14 +652,17 @@ const Profile = () => {
                         { value: 3000, label: "3000" },
                         { value: 4000, label: "4000" },
                       ]}
-                      disabled={loading}
+                      disabled={loading || !editingCalories}
                     />
                     <Typography
                       variant="body1"
                       align="center"
                       sx={{ mt: 2, fontWeight: 500 }}
                     >
-                      {profile.target_daily_calories} calories per day
+                      {editingCalories
+                        ? tempCalories
+                        : profile.target_daily_calories}{" "}
+                      calories per day
                     </Typography>
                   </Box>
                 </Grid>
