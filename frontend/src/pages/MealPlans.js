@@ -196,14 +196,18 @@ const MealPlans = () => {
   });
 
   // Format date for display
+  // Format date for display
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
+    // Force the date to be parsed in local timezone by appending T00:00:00
+    const date = new Date(`${dateString}T00:00:00`);
     const options = { weekday: "long", month: "short", day: "numeric" };
     return date.toLocaleDateString("en-US", options);
   };
 
-  // Get today's date for highlighting
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date();
+  const todayISO = `${today.getFullYear()}-${String(
+    today.getMonth() + 1
+  ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
 
   // Create a group of dates by week for better organization
   const groupMealPlansByWeek = (mealPlans) => {
@@ -446,7 +450,7 @@ const MealPlans = () => {
                           sx={{
                             borderRadius: 3,
                             borderLeft:
-                              plan.date === today
+                              plan.date === todayISO
                                 ? `4px solid ${theme.palette.primary.main}`
                                 : "none",
                             overflow: "hidden",
@@ -456,7 +460,7 @@ const MealPlans = () => {
                             sx={{
                               p: 2,
                               bgcolor:
-                                plan.date === today
+                                plan.date === todayISO
                                   ? "primary.light"
                                   : "background.paper",
                               borderBottom: "1px solid",
@@ -471,7 +475,7 @@ const MealPlans = () => {
                                 sx={{
                                   mr: 1,
                                   color:
-                                    plan.date === today
+                                    plan.date === todayISO
                                       ? "primary.main"
                                       : "text.secondary",
                                 }}
@@ -480,14 +484,14 @@ const MealPlans = () => {
                                 variant="subtitle1"
                                 fontWeight={600}
                                 color={
-                                  plan.date === today
+                                  plan.date === todayISO
                                     ? "primary.main"
                                     : "inherit"
                                 }
                               >
                                 {formatDate(plan.date)}
                               </Typography>
-                              {plan.date === today && (
+                              {plan.date === todayISO && (
                                 <Chip
                                   label="Today"
                                   size="small"

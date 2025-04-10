@@ -50,8 +50,10 @@ const Dashboard = () => {
   const [error, setError] = useState(null);
   const [generatingPlan, setGeneratingPlan] = useState(false);
 
-  // Calculate today's date for highlighting current day
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date();
+  const todayISO = `${today.getFullYear()}-${String(
+    today.getMonth() + 1
+  ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
 
   // Load meal plans on component mount
   useEffect(() => {
@@ -165,16 +167,17 @@ const Dashboard = () => {
 
   // Format date for display
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
+    // Force the date to be parsed in local timezone by appending T00:00:00
+    const date = new Date(`${dateString}T00:00:00`);
     const options = { weekday: "long", month: "short", day: "numeric" };
     return date.toLocaleDateString("en-US", options);
   };
 
   // Check if today's date is in the meal plans
-  const hasTodayMeal = sortedMealPlans.some((plan) => plan.date === today);
+  const hasTodayMeal = sortedMealPlans.some((plan) => plan.date === todayISO);
 
   // Get today's meal plan if it exists
-  const todayMeal = sortedMealPlans.find((plan) => plan.date === today);
+  const todayMeal = sortedMealPlans.find((plan) => plan.date === todayISO);
 
   return (
     <Box>
@@ -666,7 +669,7 @@ const Dashboard = () => {
                             p: 2,
                             borderRadius: 3,
                             borderLeft:
-                              plan.date === today
+                              plan.date === todayISO
                                 ? `4px solid ${theme.palette.primary.main}`
                                 : "none",
                           }}
@@ -688,14 +691,14 @@ const Dashboard = () => {
                                 variant="subtitle1"
                                 fontWeight={600}
                                 color={
-                                  plan.date === today
+                                  plan.date === todayISO
                                     ? "primary.main"
                                     : "inherit"
                                 }
                               >
                                 {formatDate(plan.date)}
                               </Typography>
-                              {plan.date === today && (
+                              {plan.date === todayISO && (
                                 <Chip
                                   label="Today"
                                   size="small"

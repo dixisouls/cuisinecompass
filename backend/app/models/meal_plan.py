@@ -6,22 +6,32 @@ from typing import List, Dict
 
 class MealPlanModel:
     @staticmethod
-    def create(user_id: str, meal_plan_data: Dict, days: int):
+    def create(user_id: str, meal_plan_data: Dict, days: int, start_date=None):
         """
         Create a new meal plan for a user
+        
+        Parameters:
+        - user_id: User ID to create the plan for
+        - meal_plan_data: The meal plan data from the Gemini API
+        - days: Number of days to generate
+        - start_date: The starting date for the meal plan (defaults to today if None)
         """
-        # Initialize dates starting from today
-        today = date.today()
+        # Use provided start_date or default to today
+        if start_date is None:
+            start_date = date.today()
+        
+        # Create date mappings for each day, starting from start_date
         dates = {}
-        for i in range(1, days + 1):
-            day_key = f"Day{i}"
-            dates[day_key] = today + timedelta(days=i - 1)
+        for i in range(days):
+            day_key = f"Day{i+1}"  # Day1, Day2, etc.
+            day_date = start_date + timedelta(days=i)
+            dates[day_key] = day_date.isoformat()  # Store as ISO format string
 
         # Create the meal plan document
         meal_plan = {
             "user_id": ObjectId(user_id),
             "days": meal_plan_data,
-            "dates": {k: v.isoformat() for k, v in dates.items()},
+            "dates": dates,
             "created_at": datetime.now(),
         }
 
@@ -42,31 +52,27 @@ class MealPlanModel:
         """
         Mark a specific day as complete by removing it
         """
-        # Find the meal plan that contains this date
-        meal_plan = meal_plans_collection.find_one(
-            {"user_id": ObjectId(user_id), f"dates.Day1": date_str}
-        )
-
-        if not meal_plan:
-            return False
-
-        # Find the day key that has this date
-        day_key = None
-        for key, value in meal_plan["dates"].items():
-            if value == date_str:
-                day_key = key
-                break
-
-        if not day_key:
-            return False
-
-        # Remove this day from days and dates
-        result = meal_plans_collection.update_one(
-            {"_id": meal_plan["_id"]},
-            {"$unset": {f"days.{day_key}": "", f"dates.{day_key}": ""}},
-        )
-
-        return result.modified_count > 0
+        # Find all meal plans for this user
+        meal_plans = meal_plans_collection.find({"user_id": ObjectId(user_id)})
+        
+        for meal_plan in meal_plans:
+            # Find the day key that has this date
+            day_key = None
+            for key, value in meal_plan.get("dates", {}).items():
+                if value == date_str:
+                    day_key = key
+                    break
+            
+            if day_key:
+                # Remove this day from days and dates
+                result = meal_plans_collection.update_one(
+                    {"_id": meal_plan["_id"]},
+                    {"$unset": {f"days.{day_key}": "", f"dates.{day_key}": ""}},
+                )
+                if result.modified_count > 0:
+                    return True
+                
+        return False
 
     @staticmethod
     def count_planned_days(user_id: str):
@@ -99,5 +105,5 @@ class MealPlanModel:
 
         result = list(meal_plans_collection.aggregate(pipeline))
         return (
-            datetime.fromisoformat(result[0]["latest_date"]).date() if result else None
+            date.fromisoformat(result[0]["latest_date"]) if result else None
         )

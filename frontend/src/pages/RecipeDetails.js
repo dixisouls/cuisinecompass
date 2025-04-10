@@ -104,8 +104,9 @@ const RecipeDetails = () => {
 
   // Format date for display
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const options = { weekday: "long", month: "long", day: "numeric" };
+    // Force the date to be parsed in local timezone by appending T00:00:00
+    const date = new Date(`${dateString}T00:00:00`);
+    const options = { weekday: "long", month: "short", day: "numeric" };
     return date.toLocaleDateString("en-US", options);
   };
 
