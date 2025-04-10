@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from app.models.schema import UserProfileUpdate
+from app.models.schema import UserProfileUpdate, GoalsUpdate
 from app.models.user import UserModel
 from app.services.auth_service import get_current_user
 from bson import json_util
@@ -119,15 +119,14 @@ async def update_preferred_cuisines(
 
 @router.put("/profile/goals", status_code=status.HTTP_200_OK)
 async def update_goals(
-    target_daily_calories: int,
-    target_macros_pct: dict[str, int],
-    current_user: dict = Depends(get_current_user),
+    goals_data: GoalsUpdate, current_user: dict = Depends(get_current_user)
 ):
     """
     Update nutrition goals
     """
     profile_data = UserProfileUpdate(
-        target_daily_calories=target_daily_calories, target_macros_pct=target_macros_pct
+        target_daily_calories=goals_data.target_daily_calories,
+        target_macros_pct=goals_data.target_macros_pct
     )
     success = UserModel.update_profile(str(current_user["_id"]), profile_data)
 

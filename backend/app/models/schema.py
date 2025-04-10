@@ -68,6 +68,12 @@ class TokenData(BaseModel):
     email: Optional[str] = None
 
 
+# New model for goals update
+class GoalsUpdate(BaseModel):
+    target_daily_calories: int
+    target_macros_pct: Dict[str, int]
+
+
 # Meal plan schemas
 class RecipeIngredient(BaseModel):
     item: str

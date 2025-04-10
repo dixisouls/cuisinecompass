@@ -63,7 +63,11 @@ export const userApi = {
     api.put("/users/profile/disliked-ingredients", ingredients),
   updatePreferredCuisines: (cuisines) =>
     api.put("/users/profile/preferred-cuisines", cuisines),
-  updateGoals: (goals) => api.put("/users/profile/goals", goals),
+  updateGoals: (target_daily_calories, target_macros_pct) =>
+    api.put("/users/profile/goals", {
+      target_daily_calories,
+      target_macros_pct,
+    }),
 };
 
 // Meal plan endpoints
