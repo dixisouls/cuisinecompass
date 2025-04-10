@@ -101,8 +101,13 @@ const Dashboard = () => {
   const handleMarkComplete = async (date) => {
     try {
       setLoading(true);
-      await mealPlanApi.markDayComplete(date);
-
+      // Convert to ISO string format if it's a Date object
+      const dateParam = date instanceof Date 
+        ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
+        : date;
+      
+      await mealPlanApi.markDayComplete(dateParam);
+      
       // Refresh meal plans
       await fetchMealPlans();
     } catch (error) {
@@ -588,7 +593,7 @@ const Dashboard = () => {
                       <Button
                         variant="outlined"
                         color="primary"
-                        onClick={() => handleMarkComplete(today)}
+                        onClick={() => handleMarkComplete(todayISO)}
                         disabled={loading}
                         startIcon={
                           loading ? <CircularProgress size={20} /> : null
