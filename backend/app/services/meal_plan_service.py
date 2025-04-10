@@ -82,6 +82,7 @@ class MealPlanService:
     def generate_ahead(user_id: str, user_profile: Dict):
         """
         Generate meal plans for the remaining available days (up to 7 total)
+        Handles batching of requests to avoid API limitations (max 4 days per request)
         """
         # Check current planned days
         current_planned_days = MealPlanModel.count_planned_days(user_id)
@@ -101,10 +102,9 @@ class MealPlanService:
 
         # Get the latest date currently in the plan
         latest_date = MealPlanModel.get_latest_date(user_id)
-        
-        # Calculate start date - use tomorrow if there's a latest date,
-        # otherwise start from today
         today = date.today()
+        
+        # Calculate start date
         if latest_date:
             # If latest date is in the future, start from the day after
             if latest_date >= today:
@@ -115,31 +115,53 @@ class MealPlanService:
         else:
             start_date = today
 
-        # Format profile for Gemini API
-        gemini_profile = {
-            "profile": {
-                "days": days_to_generate,
-                "restrictions": user_profile["dietary_restrictions"],
-                "allergies": user_profile["allergies"],
-            },
-            "preferences": {
-                "dislikes": user_profile["disliked_ingredients"],
-                "preferred_cuisines": user_profile["preferred_cuisines"],
-            },
-            "goals": {
-                "target_daily_calories": user_profile["target_daily_calories"],
-                "target_macros_pct": user_profile["target_macros_pct"],
-            },
-        }
+        meal_plans = []
+        current_start_date = start_date
+        days_left = days_to_generate
+        
+        while days_left > 0:
+            # Generate at most 4 days at a time
+            batch_size = min(4, days_left)
+            
+            print(f"Generating meal plan batch of {batch_size} days starting from {current_start_date}")
+            
+            # Format profile for Gemini API - requesting batch_size days
+            gemini_profile = {
+                "profile": {
+                    "days": batch_size,
+                    "restrictions": user_profile["dietary_restrictions"],
+                    "allergies": user_profile["allergies"],
+                },
+                "preferences": {
+                    "dislikes": user_profile["disliked_ingredients"],
+                    "preferred_cuisines": user_profile["preferred_cuisines"],
+                },
+                "goals": {
+                    "target_daily_calories": user_profile["target_daily_calories"],
+                    "target_macros_pct": user_profile["target_macros_pct"],
+                },
+            }
 
-        # Generate meal plan using Gemini API
-        meal_plan_data = GeminiService.generate_meal_plan(
-            gemini_profile, days_to_generate
-        )
+            try:
+                # Generate meal plan for current batch
+                meal_plan_data = GeminiService.generate_meal_plan(gemini_profile, batch_size)
+                
+                # Store in database
+                meal_plan = MealPlanModel.create(
+                    user_id, meal_plan_data, batch_size, current_start_date
+                )
+                
+                meal_plans.append(meal_plan)
+                
+                # Update for next iteration
+                days_left -= batch_size
+                current_start_date = current_start_date + timedelta(days=batch_size)
+                
+            except Exception as e:
+                # Log error and stop
+                print(f"Error generating meal plan batch of {batch_size} days: {e}")
+                # If we can't generate this batch, stop here
+                break
 
-        # Store in database with explicitly passing the start_date
-        meal_plan = MealPlanModel.create(
-            user_id, meal_plan_data, days_to_generate, start_date
-        )
-
-        return meal_plan
+        # Return the last meal plan created (for API response)
+        return meal_plans[-1] if meal_plans else None
