@@ -42,7 +42,12 @@ api.interceptors.response.use(
 // Authentication endpoints
 export const authApi = {
   register: (userData) => api.post("/register", userData),
-  login: (credentials) => api.post("/token", new URLSearchParams(credentials)),
+  login: (credentials) =>
+    api.post("/token", new URLSearchParams(credentials), {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    }),
   changePassword: (passwordData) => api.post("/change-password", passwordData),
 };
 
