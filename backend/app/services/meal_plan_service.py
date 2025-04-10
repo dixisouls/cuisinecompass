@@ -43,11 +43,24 @@ class MealPlanService:
         # Generate meal plan using Gemini API
         meal_plan_data = GeminiService.generate_meal_plan(gemini_profile, days)
 
-        # Get today's date for the start date
-        today = date.today()
+        # Get the latest date currently in the plan
+        latest_date = MealPlanModel.get_latest_date(user_id)
         
-        # Store in database with explicit today as start date
-        meal_plan = MealPlanModel.create(user_id, meal_plan_data, days, today)
+        # Calculate start date - use the day after the latest date if there's a latest date,
+        # otherwise start from today
+        today = date.today()
+        if latest_date:
+            # If latest date is in the future, start from the day after
+            if latest_date >= today:
+                start_date = latest_date + timedelta(days=1)
+            else:
+                # If latest date is in the past, start from today
+                start_date = today
+        else:
+            start_date = today
+        
+        # Store in database with calculated start date
+        meal_plan = MealPlanModel.create(user_id, meal_plan_data, days, start_date)
 
         return meal_plan
 
