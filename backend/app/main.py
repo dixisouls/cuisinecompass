@@ -19,7 +19,12 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # For development, restrict in production
+        allow_origins=[
+        "https://cuisinecompass.vercel.app",
+        "https://www.cuisinecompass.vercel.app",
+        "https://cuisinecompass",
+        "http://localhost:3000"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

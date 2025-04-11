@@ -5,6 +5,10 @@ organize their weekly meals based on dietary preferences, available ingredients,
 and nutritional goals. The application uses AI-powered meal suggestions through
 Google's Gemini API to create personalized meal plans.
 
+## ✨ Live Demo
+
+**[Try CuisineCompass Now!](https://cuisinecompass.vercel.app/)**
+
 ## 🍽️ Features
 
 - **AI-Powered Meal Suggestions**: Leverage Google's Gemini API to generate meal
