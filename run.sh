@@ -52,7 +52,7 @@ FRONTEND_PID=$!
 echo -e "${GREEN}Frontend server started at http://localhost:3000${NC}"
 
 echo -e "${BLUE}=====================================${NC}"
-echo -e "${GREEN}API Documentation Generator is running!${NC}"
+echo -e "${GREEN}Cuisine Compass is running!${NC}"
 echo -e "${BLUE}Backend:${NC} http://localhost:8000"
 echo -e "${BLUE}Frontend:${NC} http://localhost:3000"
 echo -e "${BLUE}=====================================${NC}"
