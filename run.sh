@@ -6,7 +6,7 @@ BLUE='\033[0;34m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
-echo -e "${BLUE}Starting API Documentation Generator...${NC}"
+echo -e "${BLUE}Starting Cuisne Compass...${NC}"
 echo -e "${BLUE}=====================================${NC}"
 
 # Check if Python is installed
