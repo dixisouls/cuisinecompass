@@ -21,6 +21,7 @@ import {
   Step,
   StepLabel,
   StepContent,
+  Container,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import {
@@ -175,7 +176,10 @@ const RecipeDetails = () => {
   }
 
   return (
-    <Box className="recipe-details-container" sx={{ pb: 4 }}>
+    <Box
+      className="recipe-details-container"
+      sx={{ pb: 4, overflowX: "hidden" }}
+    >
       {/* Back button and actions */}
       <Box
         sx={{
@@ -242,6 +246,8 @@ const RecipeDetails = () => {
               borderRadius: 4,
               background: `linear-gradient(135deg, ${theme.palette.primary.light} 0%, ${theme.palette.primary.main} 100%)`,
               color: "white",
+              width: "100%",
+              overflow: "hidden",
             }}
           >
             <Box
@@ -250,6 +256,7 @@ const RecipeDetails = () => {
                 flexDirection: "column",
                 alignItems: "center",
                 textAlign: "center",
+                width: "100%",
               }}
             >
               <Chip
@@ -272,68 +279,121 @@ const RecipeDetails = () => {
               <Typography variant="subtitle1" sx={{ mb: 3, opacity: 0.9 }}>
                 {formatDate(date)}
               </Typography>
-              <Grid
-                container
-                spacing={4}
-                justifyContent="center"
-                sx={{ maxWidth: 600 }}
-              >
-                <Grid item xs={6} sm={4}>
-                  <Box
+
+              {/* MODIFIED SECTION START - Time Cards */}
+              <Container sx={{ width: "100%", maxWidth: "100%" }}>
+                <Grid
+                  container
+                  spacing={isMobile ? 2 : 4}
+                  justifyContent="center"
+                  sx={{
+                    width: "100%",
+                    m: 0,
+                    px: isMobile ? 0 : 2,
+                  }}
+                >
+                  <Grid
+                    item
+                    xs={12}
+                    sm={4}
                     sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
+                      p: { xs: 1, sm: 2 },
+                      width: "100%",
                     }}
                   >
-                    <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                      <Kitchen sx={{ mr: 1 }} />
-                      <Typography variant="body1">Prep Time</Typography>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        bgcolor: "rgba(255,255,255,0.1)",
+                        p: 2,
+                        borderRadius: 2,
+                        height: "100%",
+                      }}
+                    >
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", mb: 1 }}
+                      >
+                        <Kitchen sx={{ mr: 1 }} />
+                        <Typography variant="body1">Prep Time</Typography>
+                      </Box>
+                      <Typography variant="h6" fontWeight={600}>
+                        {recipe.recipe.prepTimeMins} mins
+                      </Typography>
                     </Box>
-                    <Typography variant="h6" fontWeight={600}>
-                      {recipe.recipe.prepTimeMins} mins
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={6} sm={4}>
-                  <Box
+                  </Grid>
+
+                  <Grid
+                    item
+                    xs={12}
+                    sm={4}
                     sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
+                      p: { xs: 1, sm: 2 },
+                      width: "100%",
                     }}
                   >
-                    <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                      <Timer sx={{ mr: 1 }} />
-                      <Typography variant="body1">Cook Time</Typography>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        bgcolor: "rgba(255,255,255,0.1)",
+                        p: 2,
+                        borderRadius: 2,
+                        height: "100%",
+                      }}
+                    >
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", mb: 1 }}
+                      >
+                        <Timer sx={{ mr: 1 }} />
+                        <Typography variant="body1">Cook Time</Typography>
+                      </Box>
+                      <Typography variant="h6" fontWeight={600}>
+                        {recipe.recipe.cookTimeMins} mins
+                      </Typography>
                     </Box>
-                    <Typography variant="h6" fontWeight={600}>
-                      {recipe.recipe.cookTimeMins} mins
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <Box
+                  </Grid>
+
+                  <Grid
+                    item
+                    xs={12}
+                    sm={4}
                     sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
+                      p: { xs: 1, sm: 2 },
+                      width: "100%",
                     }}
                   >
-                    <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                      <AccessTime sx={{ mr: 1 }} />
-                      <Typography variant="body1">Total Time</Typography>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        bgcolor: "rgba(255,255,255,0.1)",
+                        p: 2,
+                        borderRadius: 2,
+                        height: "100%",
+                      }}
+                    >
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", mb: 1 }}
+                      >
+                        <AccessTime sx={{ mr: 1 }} />
+                        <Typography variant="body1">Total Time</Typography>
+                      </Box>
+                      <Typography variant="h6" fontWeight={600}>
+                        {getTotalTime(
+                          recipe.recipe.prepTimeMins,
+                          recipe.recipe.cookTimeMins
+                        )}{" "}
+                        mins
+                      </Typography>
                     </Box>
-                    <Typography variant="h6" fontWeight={600}>
-                      {getTotalTime(
-                        recipe.recipe.prepTimeMins,
-                        recipe.recipe.cookTimeMins
-                      )}{" "}
-                      mins
-                    </Typography>
-                  </Box>
+                  </Grid>
                 </Grid>
-              </Grid>
+              </Container>
+              {/* MODIFIED SECTION END */}
             </Box>
           </Paper>
         </motion.div>
@@ -566,23 +626,6 @@ const RecipeDetails = () => {
               py: 1.5,
               borderRadius: 8,
               boxShadow: 4,
-              position: "relative",
-              overflow: "hidden",
-              "&::after": {
-                content: '""',
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                background:
-                  "linear-gradient(120deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 70%)",
-                transform: "translateX(-100%)",
-                transition: "transform 0.6s",
-              },
-              "&:hover::after": {
-                transform: "translateX(100%)",
-              },
             }}
           >
             I Cooked This!
