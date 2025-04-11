@@ -22,6 +22,7 @@ import {
   TextField,
   Alert,
   useMediaQuery,
+  Container,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import {
@@ -196,7 +197,6 @@ const MealPlans = () => {
   });
 
   // Format date for display
-  // Format date for display
   const formatDate = (dateString) => {
     // Force the date to be parsed in local timezone by appending T00:00:00
     const date = new Date(`${dateString}T00:00:00`);
@@ -258,26 +258,39 @@ const MealPlans = () => {
   };
 
   return (
-    <Box>
+    <Container disableGutters maxWidth={false} sx={{ overflowX: "hidden" }}>
       <Box
         sx={{
           display: "flex",
+          flexDirection: isMobile ? "column" : "row",
           justifyContent: "space-between",
-          alignItems: "center",
+          alignItems: isMobile ? "stretch" : "center",
           mb: 4,
+          gap: 2,
+          width: "100%",
         }}
       >
-        <Typography variant="h4" component="h1" gutterBottom>
+        <Typography variant="h4" component="h1" gutterBottom sx={{ m: 0 }}>
           Meal Plans
         </Typography>
 
-        <Box>
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            width: isMobile ? "100%" : "auto",
+            flexDirection: isMobile ? "column" : "row",
+          }}
+        >
           <Button
             variant="outlined"
             color="primary"
             onClick={handleGenerateAhead}
             disabled={plannedDays >= 7 || generatingPlan}
-            sx={{ mr: 2, display: { xs: "none", sm: "inline-flex" } }}
+            sx={{
+              display: { xs: "none", sm: "flex" },
+            }}
+            fullWidth={isMobile}
           >
             Fill Week
           </Button>
@@ -287,6 +300,7 @@ const MealPlans = () => {
             startIcon={<Add />}
             onClick={handleOpenGenerateDialog}
             disabled={plannedDays >= 7 || generatingPlan}
+            fullWidth={isMobile}
           >
             {generatingPlan ? (
               <CircularProgress size={24} color="inherit" />
@@ -341,40 +355,48 @@ const MealPlans = () => {
           p: 3,
           mb: 4,
           borderRadius: 4,
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          alignItems: { xs: "flex-start", md: "center" },
-          justifyContent: "space-between",
-          gap: 2,
+          width: "100%",
         }}
       >
-        <Box>
-          <Typography variant="h6" sx={{ mb: 1 }}>
-            Meal Plan Status
-          </Typography>
-          <Typography color="text.secondary">
-            You have {plannedDays} out of 7 possible days planned.
-            {plannedDays < 7
-              ? ` You can generate up to ${7 - plannedDays} more day${
-                  7 - plannedDays > 1 ? "s" : ""
-                }.`
-              : " Your meal plan is full."}
-          </Typography>
-        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
+            alignItems: { xs: "flex-start", md: "center" },
+            justifyContent: "space-between",
+            gap: 2,
+            width: "100%",
+          }}
+        >
+          <Box>
+            <Typography variant="h6" sx={{ mb: 1 }}>
+              Meal Plan Status
+            </Typography>
+            <Typography color="text.secondary">
+              You have {plannedDays} out of 7 possible days planned.
+              {plannedDays < 7
+                ? ` You can generate up to ${7 - plannedDays} more day${
+                    7 - plannedDays > 1 ? "s" : ""
+                  }.`
+                : " Your meal plan is full."}
+            </Typography>
+          </Box>
 
-        {plannedDays < 7 && (
-          <Box sx={{ display: { xs: "block", sm: "none" }, width: "100%" }}>
+          {plannedDays < 7 && (
             <Button
               variant="outlined"
               color="primary"
               onClick={handleGenerateAhead}
               disabled={plannedDays >= 7 || generatingPlan}
-              fullWidth
+              fullWidth={isMobile}
+              sx={{
+                display: { xs: "flex", sm: "none" },
+              }}
             >
               Fill Remaining Days
             </Button>
-          </Box>
-        )}
+          )}
+        </Box>
       </Paper>
 
       {loading ? (
@@ -389,6 +411,7 @@ const MealPlans = () => {
             borderRadius: 4,
             textAlign: "center",
             bgcolor: "rgba(0,0,0,0.02)",
+            width: "100%",
           }}
         >
           <Typography variant="h6" color="text.secondary" gutterBottom>
@@ -407,7 +430,7 @@ const MealPlans = () => {
           </Button>
         </Paper>
       ) : (
-        <Box>
+        <Box sx={{ width: "100%" }}>
           {mealPlansByWeek.map((week, weekIndex) => (
             <Accordion
               key={week.weekStart}
@@ -419,6 +442,7 @@ const MealPlans = () => {
                 borderColor: "divider",
                 borderRadius: "16px !important",
                 overflow: "hidden",
+                width: "100%",
                 "&:before": {
                   display: "none",
                 },
@@ -430,20 +454,25 @@ const MealPlans = () => {
                   bgcolor: "background.paper",
                   borderBottom: weekIndex === 0 ? "1px solid" : "none",
                   borderColor: "divider",
+                  width: "100%",
                 }}
               >
                 <Typography variant="h6" sx={{ fontWeight: 600 }}>
                   Week of {formatWeek(week.weekStart)}
                 </Typography>
               </AccordionSummary>
-              <AccordionDetails sx={{ p: 2 }}>
-                <Grid container spacing={3}>
+              <AccordionDetails sx={{ p: 0, width: "100%" }}>
+                <Box sx={{ width: "100%" }}>
                   {week.plans.map((plan, index) => (
-                    <Grid item xs={12} key={plan.date}>
+                    <Box
+                      key={plan.date}
+                      sx={{ width: "100%", mb: 2, p: { xs: 1, sm: 2 } }}
+                    >
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.3, delay: index * 0.1 }}
+                        style={{ width: "100%" }}
                       >
                         <Paper
                           elevation={2}
@@ -454,11 +483,12 @@ const MealPlans = () => {
                                 ? `4px solid ${theme.palette.primary.main}`
                                 : "none",
                             overflow: "hidden",
+                            width: "100%",
                           }}
                         >
                           <Box
                             sx={{
-                              p: 2,
+                              p: { xs: 2, sm: 2 },
                               bgcolor:
                                 plan.date === todayISO
                                   ? "primary.light"
@@ -466,11 +496,20 @@ const MealPlans = () => {
                               borderBottom: "1px solid",
                               borderColor: "divider",
                               display: "flex",
-                              alignItems: "center",
+                              flexDirection: isMobile ? "column" : "row",
+                              alignItems: isMobile ? "flex-start" : "center",
                               justifyContent: "space-between",
+                              gap: 2,
+                              width: "100%",
                             }}
                           >
-                            <Box sx={{ display: "flex", alignItems: "center" }}>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                width: isMobile ? "100%" : "auto",
+                              }}
+                            >
                               <CalendarToday
                                 sx={{
                                   mr: 1,
@@ -506,15 +545,25 @@ const MealPlans = () => {
                               size="small"
                               startIcon={<Check />}
                               onClick={() => handleOpenConfirmDialog(plan.date)}
+                              fullWidth={isMobile}
                             >
                               Mark Complete
                             </Button>
                           </Box>
 
-                          <Box sx={{ p: { xs: 2, md: 3 } }}>
-                            <Grid container spacing={3}>
+                          <Box sx={{ width: "100%", p: { xs: 1, sm: 2 } }}>
+                            <Grid
+                              container
+                              spacing={2}
+                              sx={{ width: "100%", m: 0 }}
+                            >
                               {/* Breakfast Card */}
-                              <Grid item xs={12} md={4}>
+                              <Grid
+                                item
+                                xs={12}
+                                md={4}
+                                sx={{ p: { xs: 1, sm: 1 }, width: "100%" }}
+                              >
                                 <Card
                                   sx={{
                                     height: "100%",
@@ -522,6 +571,7 @@ const MealPlans = () => {
                                     boxShadow: "none",
                                     border: "1px solid",
                                     borderColor: "divider",
+                                    width: "100%",
                                   }}
                                 >
                                   <CardContent sx={{ p: 2 }}>
@@ -590,7 +640,12 @@ const MealPlans = () => {
                               </Grid>
 
                               {/* Lunch Card */}
-                              <Grid item xs={12} md={4}>
+                              <Grid
+                                item
+                                xs={12}
+                                md={4}
+                                sx={{ p: { xs: 1, sm: 1 }, width: "100%" }}
+                              >
                                 <Card
                                   sx={{
                                     height: "100%",
@@ -598,6 +653,7 @@ const MealPlans = () => {
                                     boxShadow: "none",
                                     border: "1px solid",
                                     borderColor: "divider",
+                                    width: "100%",
                                   }}
                                 >
                                   <CardContent sx={{ p: 2 }}>
@@ -664,7 +720,12 @@ const MealPlans = () => {
                               </Grid>
 
                               {/* Dinner Card */}
-                              <Grid item xs={12} md={4}>
+                              <Grid
+                                item
+                                xs={12}
+                                md={4}
+                                sx={{ p: { xs: 1, sm: 1 }, width: "100%" }}
+                              >
                                 <Card
                                   sx={{
                                     height: "100%",
@@ -672,6 +733,7 @@ const MealPlans = () => {
                                     boxShadow: "none",
                                     border: "1px solid",
                                     borderColor: "divider",
+                                    width: "100%",
                                   }}
                                 >
                                   <CardContent sx={{ p: 2 }}>
@@ -740,9 +802,9 @@ const MealPlans = () => {
                           </Box>
                         </Paper>
                       </motion.div>
-                    </Grid>
+                    </Box>
                   ))}
-                </Grid>
+                </Box>
               </AccordionDetails>
             </Accordion>
           ))}
@@ -818,7 +880,7 @@ const MealPlans = () => {
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </Container>
   );
 };
 

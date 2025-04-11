@@ -14,6 +14,7 @@ import {
   useMediaQuery,
   Alert,
   IconButton,
+  Container,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import {
@@ -30,14 +31,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { mealPlanApi } from "../services/api";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  Tooltip,
-  Legend,
-} from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -102,12 +96,16 @@ const Dashboard = () => {
     try {
       setLoading(true);
       // Convert to ISO string format if it's a Date object
-      const dateParam = date instanceof Date 
-        ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
-        : date;
-      
+      const dateParam =
+        date instanceof Date
+          ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+              2,
+              "0"
+            )}-${String(date.getDate()).padStart(2, "0")}`
+          : date;
+
       await mealPlanApi.markDayComplete(dateParam);
-      
+
       // Refresh meal plans
       await fetchMealPlans();
     } catch (error) {
@@ -185,7 +183,7 @@ const Dashboard = () => {
   const todayMeal = sortedMealPlans.find((plan) => plan.date === todayISO);
 
   return (
-    <Box>
+    <Container disableGutters maxWidth={false} sx={{ overflowX: "hidden" }}>
       <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 2 }}>
         Dashboard
       </Typography>
@@ -200,12 +198,12 @@ const Dashboard = () => {
         </Alert>
       )}
 
-      <Grid container spacing={3}>
+      <Box sx={{ width: "100%", overflowX: "hidden" }}>
         {/* Summary Cards Row */}
-        <Grid item xs={12}>
-          <Grid container spacing={3}>
+        <Box sx={{ mb: 3 }}>
+          <Grid container spacing={2} sx={{ width: "100%", mx: 0 }}>
             {/* Calories Card */}
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={12} sm={6} md={4} sx={{ width: "100%" }}>
               <Paper
                 elevation={3}
                 sx={{
@@ -228,7 +226,7 @@ const Dashboard = () => {
             </Grid>
 
             {/* Meal Plans Card */}
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={12} sm={6} md={4} sx={{ width: "100%" }}>
               <Paper
                 elevation={3}
                 sx={{
@@ -279,21 +277,6 @@ const Dashboard = () => {
                       mt: 1,
                       position: "relative",
                       overflow: "hidden",
-                      "&::after": {
-                        content: '""',
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        height: "100%",
-                        background:
-                          "linear-gradient(120deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 70%)",
-                        transform: "translateX(-100%)",
-                        transition: "transform 0.6s",
-                      },
-                      "&:hover::after": {
-                        transform: "translateX(100%)",
-                      },
                     }}
                   >
                     {generatingPlan ? (
@@ -307,7 +290,7 @@ const Dashboard = () => {
             </Grid>
 
             {/* Macros Card */}
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={4} sx={{ width: "100%" }}>
               <Paper
                 elevation={3}
                 sx={{
@@ -359,442 +342,469 @@ const Dashboard = () => {
               </Paper>
             </Grid>
           </Grid>
-        </Grid>
+        </Box>
 
         {/* Today's Meals Section */}
-        <Grid item xs={12}>
-          <Box sx={{ mb: 4 }}>
-            <Typography variant="h5" sx={{ mb: 2, fontWeight: 600 }}>
-              Today's Meals
-            </Typography>
+        <Box sx={{ mb: 4, width: "100%" }}>
+          <Typography variant="h5" sx={{ mb: 2, fontWeight: 600 }}>
+            Today's Meals
+          </Typography>
 
-            {loading ? (
-              <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
-                <CircularProgress />
-              </Box>
-            ) : hasTodayMeal ? (
-              <AnimatePresence>
-                <Grid container spacing={3}>
-                  {/* Breakfast Card */}
-                  <Grid item xs={12} md={4}>
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3, delay: 0 }}
+          {loading ? (
+            <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
+              <CircularProgress />
+            </Box>
+          ) : hasTodayMeal ? (
+            <AnimatePresence>
+              <Grid container spacing={2} sx={{ width: "100%", mx: 0 }}>
+                {/* Breakfast Card */}
+                <Grid item xs={12} md={4} sx={{ width: "100%" }}>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 0 }}
+                    style={{ width: "100%" }}
+                  >
+                    <Card
+                      sx={{
+                        height: "100%",
+                        borderRadius: 4,
+                        width: "100%",
+                      }}
                     >
-                      <Card
-                        sx={{
-                          height: "100%",
-                          borderRadius: 4,
-                        }}
-                      >
-                        <CardContent sx={{ p: 3 }}>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              mb: 2,
-                            }}
+                      <CardContent sx={{ p: 3 }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            mb: 2,
+                          }}
+                        >
+                          <FastfoodOutlined
+                            sx={{ mr: 1, color: theme.palette.warning.main }}
+                          />
+                          <Typography variant="h6">Breakfast</Typography>
+                        </Box>
+                        <Typography
+                          variant="h6"
+                          sx={{ fontWeight: 600, mb: 1 }}
+                        >
+                          {todayMeal.breakfast.name}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{ mb: 2 }}
+                        >
+                          {todayMeal.breakfast.recipe.description}
+                        </Typography>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            flexWrap: "wrap",
+                            gap: 1,
+                          }}
+                        >
+                          <Chip
+                            label={`${
+                              todayMeal.breakfast.recipe.prepTimeMins +
+                              todayMeal.breakfast.recipe.cookTimeMins
+                            } mins`}
+                            size="small"
+                            color="primary"
+                            variant="outlined"
+                          />
+                          <Button
+                            endIcon={<KeyboardArrowRight />}
+                            onClick={() =>
+                              navigate(`/recipe/${todayMeal.date}/breakfast`)
+                            }
                           >
-                            <FastfoodOutlined
-                              sx={{ mr: 1, color: theme.palette.warning.main }}
-                            />
-                            <Typography variant="h6">Breakfast</Typography>
-                          </Box>
-                          <Typography
-                            variant="h6"
-                            sx={{ fontWeight: 600, mb: 1 }}
-                          >
-                            {todayMeal.breakfast.name}
-                          </Typography>
-                          <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            sx={{ mb: 2 }}
-                          >
-                            {todayMeal.breakfast.recipe.description}
-                          </Typography>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "space-between",
-                            }}
-                          >
-                            <Chip
-                              label={`${
-                                todayMeal.breakfast.recipe.prepTimeMins +
-                                todayMeal.breakfast.recipe.cookTimeMins
-                              } mins`}
-                              size="small"
-                              color="primary"
-                              variant="outlined"
-                            />
-                            <Button
-                              endIcon={<KeyboardArrowRight />}
-                              onClick={() =>
-                                navigate(`/recipe/${todayMeal.date}/breakfast`)
-                              }
-                            >
-                              View Recipe
-                            </Button>
-                          </Box>
-                        </CardContent>
-                      </Card>
-                    </motion.div>
-                  </Grid>
-
-                  {/* Lunch Card */}
-                  <Grid item xs={12} md={4}>
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3, delay: 0.1 }}
-                    >
-                      <Card
-                        sx={{
-                          height: "100%",
-                          borderRadius: 4,
-                        }}
-                      >
-                        <CardContent sx={{ p: 3 }}>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              mb: 2,
-                            }}
-                          >
-                            <LocalDiningOutlined
-                              sx={{ mr: 1, color: theme.palette.primary.main }}
-                            />
-                            <Typography variant="h6">Lunch</Typography>
-                          </Box>
-                          <Typography
-                            variant="h6"
-                            sx={{ fontWeight: 600, mb: 1 }}
-                          >
-                            {todayMeal.lunch.name}
-                          </Typography>
-                          <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            sx={{ mb: 2 }}
-                          >
-                            {todayMeal.lunch.recipe.description}
-                          </Typography>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "space-between",
-                            }}
-                          >
-                            <Chip
-                              label={`${
-                                todayMeal.lunch.recipe.prepTimeMins +
-                                todayMeal.lunch.recipe.cookTimeMins
-                              } mins`}
-                              size="small"
-                              color="primary"
-                              variant="outlined"
-                            />
-                            <Button
-                              endIcon={<KeyboardArrowRight />}
-                              onClick={() =>
-                                navigate(`/recipe/${todayMeal.date}/lunch`)
-                              }
-                            >
-                              View Recipe
-                            </Button>
-                          </Box>
-                        </CardContent>
-                      </Card>
-                    </motion.div>
-                  </Grid>
-
-                  {/* Dinner Card */}
-                  <Grid item xs={12} md={4}>
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3, delay: 0.2 }}
-                    >
-                      <Card
-                        sx={{
-                          height: "100%",
-                          borderRadius: 4,
-                        }}
-                      >
-                        <CardContent sx={{ p: 3 }}>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              mb: 2,
-                            }}
-                          >
-                            <DinnerDiningOutlined
-                              sx={{
-                                mr: 1,
-                                color: theme.palette.secondary.main,
-                              }}
-                            />
-                            <Typography variant="h6">Dinner</Typography>
-                          </Box>
-                          <Typography
-                            variant="h6"
-                            sx={{ fontWeight: 600, mb: 1 }}
-                          >
-                            {todayMeal.dinner.name}
-                          </Typography>
-                          <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            sx={{ mb: 2 }}
-                          >
-                            {todayMeal.dinner.recipe.description}
-                          </Typography>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "space-between",
-                            }}
-                          >
-                            <Chip
-                              label={`${
-                                todayMeal.dinner.recipe.prepTimeMins +
-                                todayMeal.dinner.recipe.cookTimeMins
-                              } mins`}
-                              size="small"
-                              color="primary"
-                              variant="outlined"
-                            />
-                            <Button
-                              endIcon={<KeyboardArrowRight />}
-                              onClick={() =>
-                                navigate(`/recipe/${todayMeal.date}/dinner`)
-                              }
-                            >
-                              View Recipe
-                            </Button>
-                          </Box>
-                        </CardContent>
-                      </Card>
-                    </motion.div>
-                  </Grid>
-
-                  {/* Complete Today Button */}
-                  <Grid item xs={12}>
-                    <Box
-                      sx={{ display: "flex", justifyContent: "center", mt: 2 }}
-                    >
-                      <Button
-                        variant="outlined"
-                        color="primary"
-                        onClick={() => handleMarkComplete(todayISO)}
-                        disabled={loading}
-                        startIcon={
-                          loading ? <CircularProgress size={20} /> : null
-                        }
-                      >
-                        Mark Today as Complete
-                      </Button>
-                    </Box>
-                  </Grid>
+                            View Recipe
+                          </Button>
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
                 </Grid>
-              </AnimatePresence>
-            ) : (
-              <Paper
-                elevation={2}
-                sx={{
-                  p: 4,
-                  borderRadius: 4,
-                  textAlign: "center",
-                  bgcolor: "rgba(0,0,0,0.02)",
-                }}
+
+                {/* Lunch Card */}
+                <Grid item xs={12} md={4} sx={{ width: "100%" }}>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 0.1 }}
+                    style={{ width: "100%" }}
+                  >
+                    <Card
+                      sx={{
+                        height: "100%",
+                        borderRadius: 4,
+                        width: "100%",
+                      }}
+                    >
+                      <CardContent sx={{ p: 3 }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            mb: 2,
+                          }}
+                        >
+                          <LocalDiningOutlined
+                            sx={{ mr: 1, color: theme.palette.primary.main }}
+                          />
+                          <Typography variant="h6">Lunch</Typography>
+                        </Box>
+                        <Typography
+                          variant="h6"
+                          sx={{ fontWeight: 600, mb: 1 }}
+                        >
+                          {todayMeal.lunch.name}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{ mb: 2 }}
+                        >
+                          {todayMeal.lunch.recipe.description}
+                        </Typography>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            flexWrap: "wrap",
+                            gap: 1,
+                          }}
+                        >
+                          <Chip
+                            label={`${
+                              todayMeal.lunch.recipe.prepTimeMins +
+                              todayMeal.lunch.recipe.cookTimeMins
+                            } mins`}
+                            size="small"
+                            color="primary"
+                            variant="outlined"
+                          />
+                          <Button
+                            endIcon={<KeyboardArrowRight />}
+                            onClick={() =>
+                              navigate(`/recipe/${todayMeal.date}/lunch`)
+                            }
+                          >
+                            View Recipe
+                          </Button>
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                </Grid>
+
+                {/* Dinner Card */}
+                <Grid item xs={12} md={4} sx={{ width: "100%" }}>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: 0.2 }}
+                    style={{ width: "100%" }}
+                  >
+                    <Card
+                      sx={{
+                        height: "100%",
+                        borderRadius: 4,
+                        width: "100%",
+                      }}
+                    >
+                      <CardContent sx={{ p: 3 }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            mb: 2,
+                          }}
+                        >
+                          <DinnerDiningOutlined
+                            sx={{
+                              mr: 1,
+                              color: theme.palette.secondary.main,
+                            }}
+                          />
+                          <Typography variant="h6">Dinner</Typography>
+                        </Box>
+                        <Typography
+                          variant="h6"
+                          sx={{ fontWeight: 600, mb: 1 }}
+                        >
+                          {todayMeal.dinner.name}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{ mb: 2 }}
+                        >
+                          {todayMeal.dinner.recipe.description}
+                        </Typography>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            flexWrap: "wrap",
+                            gap: 1,
+                          }}
+                        >
+                          <Chip
+                            label={`${
+                              todayMeal.dinner.recipe.prepTimeMins +
+                              todayMeal.dinner.recipe.cookTimeMins
+                            } mins`}
+                            size="small"
+                            color="primary"
+                            variant="outlined"
+                          />
+                          <Button
+                            endIcon={<KeyboardArrowRight />}
+                            onClick={() =>
+                              navigate(`/recipe/${todayMeal.date}/dinner`)
+                            }
+                          >
+                            View Recipe
+                          </Button>
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                </Grid>
+
+                {/* Complete Today Button */}
+                <Grid item xs={12} sx={{ width: "100%" }}>
+                  <Box
+                    sx={{ display: "flex", justifyContent: "center", mt: 2 }}
+                  >
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      onClick={() => handleMarkComplete(todayISO)}
+                      disabled={loading}
+                      startIcon={
+                        loading ? <CircularProgress size={20} /> : null
+                      }
+                    >
+                      Mark Today as Complete
+                    </Button>
+                  </Box>
+                </Grid>
+              </Grid>
+            </AnimatePresence>
+          ) : (
+            <Paper
+              elevation={2}
+              sx={{
+                p: 4,
+                borderRadius: 4,
+                textAlign: "center",
+                bgcolor: "rgba(0,0,0,0.02)",
+                width: "100%",
+              }}
+            >
+              <Typography variant="h6" color="text.secondary" gutterBottom>
+                No meals planned for today
+              </Typography>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleGenerateMealPlan}
+                disabled={plannedDays >= 7 || generatingPlan}
+                startIcon={
+                  generatingPlan ? <CircularProgress size={20} /> : <Add />
+                }
+                sx={{ mt: 2 }}
               >
-                <Typography variant="h6" color="text.secondary" gutterBottom>
-                  No meals planned for today
-                </Typography>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleGenerateMealPlan}
-                  disabled={plannedDays >= 7 || generatingPlan}
-                  startIcon={
-                    generatingPlan ? <CircularProgress size={20} /> : <Add />
-                  }
-                  sx={{ mt: 2 }}
-                >
-                  Generate Meal Plan
-                </Button>
-              </Paper>
-            )}
-          </Box>
-        </Grid>
+                Generate Meal Plan
+              </Button>
+            </Paper>
+          )}
+        </Box>
 
         {/* Upcoming Meals Section */}
         {sortedMealPlans.length > 0 && (
-          <Grid item xs={12}>
-            <Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  mb: 2,
-                }}
+          <Box sx={{ width: "100%" }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                mb: 2,
+                width: "100%",
+              }}
+            >
+              <Typography variant="h5" sx={{ fontWeight: 600 }}>
+                Upcoming Meals
+              </Typography>
+              <Button
+                color="primary"
+                endIcon={<KeyboardArrowRight />}
+                onClick={() => navigate("/meal-plans")}
               >
-                <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                  Upcoming Meals
-                </Typography>
-                <Button
-                  color="primary"
-                  endIcon={<KeyboardArrowRight />}
-                  onClick={() => navigate("/meal-plans")}
-                >
-                  View All
-                </Button>
-              </Box>
+                View All
+              </Button>
+            </Box>
 
-              <AnimatePresence>
-                <Grid container spacing={2}>
-                  {sortedMealPlans.slice(0, 3).map((plan, index) => (
-                    <Grid item xs={12} key={plan.date}>
-                      <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.3, delay: index * 0.1 }}
+            <AnimatePresence>
+              <Box sx={{ width: "100%" }}>
+                {sortedMealPlans.slice(0, 3).map((plan, index) => (
+                  <Box key={plan.date} sx={{ mb: 2, width: "100%" }}>
+                    <motion.div
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, delay: index * 0.1 }}
+                      style={{ width: "100%" }}
+                    >
+                      <Paper
+                        elevation={2}
+                        sx={{
+                          p: 2,
+                          borderRadius: 3,
+                          borderLeft:
+                            plan.date === todayISO
+                              ? `4px solid ${theme.palette.primary.main}`
+                              : "none",
+                          width: "100%",
+                        }}
                       >
-                        <Paper
-                          elevation={2}
+                        <Box
                           sx={{
-                            p: 2,
-                            borderRadius: 3,
-                            borderLeft:
-                              plan.date === todayISO
-                                ? `4px solid ${theme.palette.primary.main}`
-                                : "none",
+                            display: "flex",
+                            flexDirection: isMobile ? "column" : "row",
+                            alignItems: isMobile ? "flex-start" : "center",
+                            width: "100%",
+                            gap: isMobile ? 2 : 0,
                           }}
                         >
                           <Box
                             sx={{
-                              display: "flex",
-                              flexDirection: isMobile ? "column" : "row",
-                              alignItems: isMobile ? "flex-start" : "center",
+                              minWidth: isMobile ? "100%" : "180px",
+                              mb: isMobile ? 1 : 0,
                             }}
                           >
-                            <Box
-                              sx={{
-                                minWidth: isMobile ? "100%" : "180px",
-                                mb: isMobile ? 1 : 0,
-                              }}
+                            <Typography
+                              variant="subtitle1"
+                              fontWeight={600}
+                              color={
+                                plan.date === todayISO
+                                  ? "primary.main"
+                                  : "inherit"
+                              }
                             >
-                              <Typography
-                                variant="subtitle1"
-                                fontWeight={600}
-                                color={
-                                  plan.date === todayISO
-                                    ? "primary.main"
-                                    : "inherit"
-                                }
-                              >
-                                {formatDate(plan.date)}
-                              </Typography>
-                              {plan.date === todayISO && (
-                                <Chip
-                                  label="Today"
-                                  size="small"
-                                  color="primary"
-                                  sx={{ mr: 1, mt: 0.5 }}
-                                />
-                              )}
-                            </Box>
-
-                            <Divider
-                              orientation={isMobile ? "horizontal" : "vertical"}
-                              flexItem
-                              sx={{
-                                mx: 2,
-                                my: isMobile ? 1 : 0,
-                                display: isMobile ? "block" : "flex",
-                              }}
-                            />
-
-                            <Box
-                              sx={{
-                                flex: 1,
-                                display: "flex",
-                                flexDirection: isMobile ? "column" : "row",
-                                gap: 2,
-                              }}
-                            >
-                              <Box sx={{ minWidth: "33%" }}>
-                                <Typography
-                                  variant="body2"
-                                  color="text.secondary"
-                                >
-                                  Breakfast
-                                </Typography>
-                                <Typography variant="body1" noWrap>
-                                  {plan.breakfast.name}
-                                </Typography>
-                              </Box>
-
-                              <Box sx={{ minWidth: "33%" }}>
-                                <Typography
-                                  variant="body2"
-                                  color="text.secondary"
-                                >
-                                  Lunch
-                                </Typography>
-                                <Typography variant="body1" noWrap>
-                                  {plan.lunch.name}
-                                </Typography>
-                              </Box>
-
-                              <Box sx={{ minWidth: "33%" }}>
-                                <Typography
-                                  variant="body2"
-                                  color="text.secondary"
-                                >
-                                  Dinner
-                                </Typography>
-                                <Typography variant="body1" noWrap>
-                                  {plan.dinner.name}
-                                </Typography>
-                              </Box>
-                            </Box>
-
-                            <Box
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                ml: isMobile ? 0 : 2,
-                                mt: isMobile ? 1 : 0,
-                              }}
-                            >
-                              <IconButton
+                              {formatDate(plan.date)}
+                            </Typography>
+                            {plan.date === todayISO && (
+                              <Chip
+                                label="Today"
                                 size="small"
-                                onClick={() => navigate("/meal-plans")}
+                                color="primary"
+                                sx={{ mr: 1, mt: 0.5 }}
+                              />
+                            )}
+                          </Box>
+
+                          {!isMobile && (
+                            <Divider
+                              orientation="vertical"
+                              flexItem
+                              sx={{ mx: 2 }}
+                            />
+                          )}
+
+                          <Box
+                            sx={{
+                              flex: 1,
+                              display: "flex",
+                              flexDirection: isMobile ? "column" : "row",
+                              gap: 2,
+                              width: isMobile ? "100%" : "auto",
+                            }}
+                          >
+                            <Box sx={{ minWidth: isMobile ? "100%" : "33%" }}>
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
                               >
-                                <MoreHoriz />
-                              </IconButton>
+                                Breakfast
+                              </Typography>
+                              <Typography
+                                variant="body1"
+                                noWrap
+                                sx={{ maxWidth: "100%" }}
+                              >
+                                {plan.breakfast.name}
+                              </Typography>
+                            </Box>
+
+                            <Box sx={{ minWidth: isMobile ? "100%" : "33%" }}>
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                              >
+                                Lunch
+                              </Typography>
+                              <Typography
+                                variant="body1"
+                                noWrap
+                                sx={{ maxWidth: "100%" }}
+                              >
+                                {plan.lunch.name}
+                              </Typography>
+                            </Box>
+
+                            <Box sx={{ minWidth: isMobile ? "100%" : "33%" }}>
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                              >
+                                Dinner
+                              </Typography>
+                              <Typography
+                                variant="body1"
+                                noWrap
+                                sx={{ maxWidth: "100%" }}
+                              >
+                                {plan.dinner.name}
+                              </Typography>
                             </Box>
                           </Box>
-                        </Paper>
-                      </motion.div>
-                    </Grid>
-                  ))}
-                </Grid>
-              </AnimatePresence>
-            </Box>
-          </Grid>
+
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              ml: isMobile ? 0 : 2,
+                              mt: isMobile ? 1 : 0,
+                              width: isMobile ? "100%" : "auto",
+                              justifyContent: isMobile ? "flex-end" : "center",
+                            }}
+                          >
+                            <IconButton
+                              size="small"
+                              onClick={() => navigate("/meal-plans")}
+                            >
+                              <MoreHoriz />
+                            </IconButton>
+                          </Box>
+                        </Box>
+                      </Paper>
+                    </motion.div>
+                  </Box>
+                ))}
+              </Box>
+            </AnimatePresence>
+          </Box>
         )}
-      </Grid>
-    </Box>
+      </Box>
+    </Container>
   );
 };
 
