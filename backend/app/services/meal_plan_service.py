@@ -121,7 +121,7 @@ class MealPlanService:
         
         while days_left > 0:
             # Generate at most 4 days at a time
-            batch_size = min(4, days_left)
+            batch_size = min(3, days_left)
             
             print(f"Generating meal plan batch of {batch_size} days starting from {current_start_date}")
             

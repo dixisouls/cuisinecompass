@@ -1,4 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import Request
+from app.limiter import limiter
 from app.models.schema import MealPlanRequest, MealPlanComplete
 from app.services.auth_service import get_current_user
 from app.services.meal_plan_service import MealPlanService
@@ -9,15 +11,16 @@ router = APIRouter(prefix="/meal-plans", tags=["meal plans"])
 
 
 @router.post("/generate", status_code=status.HTTP_201_CREATED)
+@limiter.limit("10/minute;1000/day")
 async def generate_meal_plan(
-    request: MealPlanRequest, current_user: dict = Depends(get_current_user)
+    request:Request, meal_plan_request: MealPlanRequest, current_user: dict = Depends(get_current_user)
 ):
     """
     Generate a meal plan for specified number of days
     """
     try:
         meal_plan = MealPlanService.generate_meal_plan(
-            str(current_user["_id"]), current_user["profile"], request.days
+            str(current_user["_id"]), current_user["profile"], meal_plan_request.days
         )
 
         # Parse the MongoDB document to JSON
@@ -76,7 +79,8 @@ async def mark_day_complete(
 
 
 @router.post("/generate-ahead", status_code=status.HTTP_201_CREATED)
-async def generate_ahead(current_user: dict = Depends(get_current_user)):
+@limiter.limit("10/minute;1000/day")
+async def generate_ahead(request: Request, current_user: dict = Depends(get_current_user)):
     """
     Generate meal plans for remaining days (up to max 7 days total)
     """
