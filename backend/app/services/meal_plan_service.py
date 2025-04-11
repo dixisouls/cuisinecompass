@@ -121,10 +121,8 @@ class MealPlanService:
         
         while days_left > 0:
             # Generate at most 4 days at a time
-            batch_size = min(3, days_left)
-            
-            print(f"Generating meal plan batch of {batch_size} days starting from {current_start_date}")
-            
+            batch_size = min(2, days_left)
+                        
             # Format profile for Gemini API - requesting batch_size days
             gemini_profile = {
                 "profile": {
