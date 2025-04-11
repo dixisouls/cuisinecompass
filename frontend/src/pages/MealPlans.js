@@ -499,7 +499,7 @@ const MealPlans = () => {
                               flexDirection: isMobile ? "column" : "row",
                               alignItems: isMobile ? "flex-start" : "center",
                               justifyContent: "space-between",
-                              gap: 2,
+                              gap: isMobile ? 2 : 0,
                               width: "100%",
                             }}
                           >
@@ -515,7 +515,7 @@ const MealPlans = () => {
                                   mr: 1,
                                   color:
                                     plan.date === todayISO
-                                      ? "primary.main"
+                                      ? "white"
                                       : "text.secondary",
                                 }}
                               />
@@ -523,9 +523,7 @@ const MealPlans = () => {
                                 variant="subtitle1"
                                 fontWeight={600}
                                 color={
-                                  plan.date === todayISO
-                                    ? "primary.main"
-                                    : "inherit"
+                                  plan.date === todayISO ? "white" : "inherit"
                                 }
                               >
                                 {formatDate(plan.date)}

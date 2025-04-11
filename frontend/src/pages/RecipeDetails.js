@@ -528,7 +528,7 @@ const RecipeDetails = () => {
                             height: 32,
                             borderRadius: "50%",
                             bgcolor: "secondary.light",
-                            color: "secondary.main",
+                            color: "white",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",

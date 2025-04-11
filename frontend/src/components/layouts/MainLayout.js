@@ -129,10 +129,7 @@ const MainLayout = () => {
             >
               <ListItemIcon
                 sx={{
-                  color:
-                    location.pathname === item.path
-                      ? "primary.main"
-                      : "inherit",
+                  color: location.pathname === item.path ? "white" : "inherit",
                 }}
               >
                 {item.icon}
@@ -141,10 +138,7 @@ const MainLayout = () => {
                 primary={item.title}
                 primaryTypographyProps={{
                   fontWeight: location.pathname === item.path ? 600 : 400,
-                  color:
-                    location.pathname === item.path
-                      ? "primary.main"
-                      : "inherit",
+                  color: location.pathname === item.path ? "white" : "inherit",
                 }}
               />
             </ListItemButton>
