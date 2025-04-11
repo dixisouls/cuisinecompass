@@ -27,7 +27,7 @@ Google's Gemini API to create personalized meal plans.
 ### Backend
 
 - Python with FastAPI
-- SQLAlchemy ORM
+- MongoDB
 - Google Gemini API for AI-powered meal suggestions
 - Pydantic for data validation
 
@@ -77,7 +77,7 @@ pip install -r requirements.txt
 4. Create a .env file with your configuration:
 
 ```
-DATABASE_URL=sqlite:///./app.db
+DATABASE_URL=mongodb://<username>:<password>@<host>:<port>/<database_name>
 GEMINI_API_KEY=your_gemini_api_key
 SECRET_KEY=your_secret_key
 ```
