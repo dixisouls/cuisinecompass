@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { Link as RouterLink, Navigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { Visibility, VisibilityOff, Home } from "@mui/icons-material";
 import { motion } from "framer-motion";
 
 const Login = () => {
@@ -151,7 +151,7 @@ const Login = () => {
         </Button>
 
         <Box sx={{ textAlign: "center", mt: 2 }}>
-          <Typography variant="body2">
+          <Typography variant="body2" sx={{ mb: 1 }}>
             Don't have an account?{" "}
             <Link
               component={RouterLink}
@@ -160,6 +160,16 @@ const Login = () => {
               fontWeight={500}
             >
               Sign Up
+            </Link>
+          </Typography>
+          <Typography variant="body2">
+            <Link
+              component={RouterLink}
+              to="/"
+              color="text.secondary"
+              sx={{ display: "inline-flex", alignItems: "center" }}
+            >
+              <Home fontSize="small" sx={{ mr: 0.5 }} /> Back to Home
             </Link>
           </Typography>
         </Box>

@@ -26,6 +26,7 @@ import Profile from "./pages/Profile";
 import MealPlans from "./pages/MealPlans";
 import RecipeDetails from "./pages/RecipeDetails";
 import NotFound from "./pages/NotFound";
+import LandingPage from "./pages/LandingPage";
 
 // Theme
 import theme from "./styles/theme";
@@ -45,6 +46,9 @@ const ProtectedRoute = ({ children }) => {
 function AppRouter() {
   return (
     <Routes>
+      {/* Landing Page */}
+      <Route path="/" element={<LandingPage />} />
+
       {/* Auth Routes */}
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<Login />} />
@@ -53,7 +57,6 @@ function AppRouter() {
 
       {/* Protected Routes */}
       <Route element={<MainLayout />}>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route
           path="/dashboard"
           element={

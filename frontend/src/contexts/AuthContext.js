@@ -79,7 +79,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("token");
     setCurrentUser(null);
     toast.info("You have been logged out.");
-    navigate("/login");
+    navigate("/"); // Changed from "/login" to "/" to redirect to landing page
   };
 
   const changePassword = async (oldPassword, newPassword) => {
