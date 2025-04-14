@@ -538,12 +538,29 @@ const MealPlans = () => {
                               )}
                             </Box>
                             <Button
-                              variant="outlined"
-                              color="primary"
+                              variant={
+                                plan.date === todayISO
+                                  ? "contained"
+                                  : "outlined"
+                              }
+                              color={
+                                plan.date === todayISO ? "inherit" : "primary"
+                              }
                               size="small"
                               startIcon={<Check />}
                               onClick={() => handleOpenConfirmDialog(plan.date)}
                               fullWidth={isMobile}
+                              sx={
+                                plan.date === todayISO
+                                  ? {
+                                      bgcolor: "white",
+                                      color: "primary.main",
+                                      "&:hover": {
+                                        bgcolor: "grey.100",
+                                      },
+                                    }
+                                  : {}
+                              }
                             >
                               Mark Complete
                             </Button>
