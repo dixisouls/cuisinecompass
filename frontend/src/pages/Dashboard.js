@@ -14,7 +14,6 @@ import {
   useMediaQuery,
   Alert,
   IconButton,
-  Container,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import {
@@ -183,7 +182,7 @@ const Dashboard = () => {
   const todayMeal = sortedMealPlans.find((plan) => plan.date === todayISO);
 
   return (
-    <Container disableGutters maxWidth={false} sx={{ overflowX: "hidden" }}>
+    <Box sx={{ width: "100%", maxWidth: "100%", overflowX: "hidden" }}>
       <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 2 }}>
         Dashboard
       </Typography>
@@ -198,12 +197,12 @@ const Dashboard = () => {
         </Alert>
       )}
 
-      <Box sx={{ width: "100%", overflowX: "hidden" }}>
+      <Box sx={{ width: "100%", maxWidth: "100%", overflowX: "hidden" }}>
         {/* Summary Cards Row */}
-        <Box sx={{ mb: 3 }}>
-          <Grid container spacing={2} sx={{ width: "100%", mx: 0 }}>
+        <Box sx={{ mb: 3, width: "100%" }}>
+          <Grid container spacing={2} sx={{ width: "100%" }}>
             {/* Calories Card */}
-            <Grid item xs={12} sm={6} md={4} sx={{ width: "100%" }}>
+            <Grid item xs={12} sm={6} md={4}>
               <Paper
                 elevation={3}
                 sx={{
@@ -226,7 +225,7 @@ const Dashboard = () => {
             </Grid>
 
             {/* Meal Plans Card */}
-            <Grid item xs={12} sm={6} md={4} sx={{ width: "100%" }}>
+            <Grid item xs={12} sm={6} md={4}>
               <Paper
                 elevation={3}
                 sx={{
@@ -290,7 +289,7 @@ const Dashboard = () => {
             </Grid>
 
             {/* Macros Card */}
-            <Grid item xs={12} md={4} sx={{ width: "100%" }}>
+            <Grid item xs={12} md={4}>
               <Paper
                 elevation={3}
                 sx={{
@@ -356,9 +355,9 @@ const Dashboard = () => {
             </Box>
           ) : hasTodayMeal ? (
             <AnimatePresence>
-              <Grid container spacing={2} sx={{ width: "100%", mx: 0 }}>
+              <Grid container spacing={2} sx={{ width: "100%" }}>
                 {/* Breakfast Card */}
-                <Grid item xs={12} md={4} sx={{ width: "100%" }}>
+                <Grid item xs={12} md={4}>
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -431,7 +430,7 @@ const Dashboard = () => {
                 </Grid>
 
                 {/* Lunch Card */}
-                <Grid item xs={12} md={4} sx={{ width: "100%" }}>
+                <Grid item xs={12} md={4}>
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -504,7 +503,7 @@ const Dashboard = () => {
                 </Grid>
 
                 {/* Dinner Card */}
-                <Grid item xs={12} md={4} sx={{ width: "100%" }}>
+                <Grid item xs={12} md={4}>
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -580,7 +579,7 @@ const Dashboard = () => {
                 </Grid>
 
                 {/* Complete Today Button */}
-                <Grid item xs={12} sx={{ width: "100%" }}>
+                <Grid item xs={12}>
                   <Box
                     sx={{ display: "flex", justifyContent: "center", mt: 2 }}
                   >
@@ -728,7 +727,7 @@ const Dashboard = () => {
                               width: isMobile ? "100%" : "auto",
                             }}
                           >
-                            <Box sx={{ minWidth: isMobile ? "100%" : "33%" }}>
+                            <Box sx={{ minWidth: isMobile ? "100%" : "30%" }}>
                               <Typography
                                 variant="body2"
                                 color="text.secondary"
@@ -744,7 +743,7 @@ const Dashboard = () => {
                               </Typography>
                             </Box>
 
-                            <Box sx={{ minWidth: isMobile ? "100%" : "33%" }}>
+                            <Box sx={{ minWidth: isMobile ? "100%" : "30%" }}>
                               <Typography
                                 variant="body2"
                                 color="text.secondary"
@@ -760,7 +759,7 @@ const Dashboard = () => {
                               </Typography>
                             </Box>
 
-                            <Box sx={{ minWidth: isMobile ? "100%" : "33%" }}>
+                            <Box sx={{ minWidth: isMobile ? "100%" : "30%" }}>
                               <Typography
                                 variant="body2"
                                 color="text.secondary"
@@ -804,7 +803,7 @@ const Dashboard = () => {
           </Box>
         )}
       </Box>
-    </Container>
+    </Box>
   );
 };
 

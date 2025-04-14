@@ -62,6 +62,8 @@ const navItems = [
   { title: "Meal Plans", path: "/meal-plans", icon: <RestaurantMenuIcon /> },
 ];
 
+const DRAWER_WIDTH = 240;
+
 const MainLayout = () => {
   const theme = useTheme();
   const { currentUser, logout } = useAuth();
@@ -107,7 +109,7 @@ const MainLayout = () => {
 
   // Drawer content
   const drawer = (
-    <Box sx={{ width: 250 }} role="presentation">
+    <Box sx={{ width: DRAWER_WIDTH }} role="presentation">
       <Box sx={{ p: 2, display: "flex", justifyContent: "center" }}>
         <Logo />
       </Box>
@@ -154,6 +156,8 @@ const MainLayout = () => {
         display: "flex",
         minHeight: "100vh",
         bgcolor: "background.default",
+        width: "100%",
+        overflowX: "hidden",
       }}
     >
       {/* App Bar */}
@@ -162,6 +166,8 @@ const MainLayout = () => {
         sx={{
           bgcolor: "background.paper",
           color: "text.primary",
+          width: { md: `calc(100% - ${DRAWER_WIDTH}px)` },
+          ml: { md: `${DRAWER_WIDTH}px` },
           zIndex: (theme) => theme.zIndex.drawer + 1,
         }}
         elevation={0}
@@ -179,10 +185,21 @@ const MainLayout = () => {
             </IconButton>
           )}
 
-          {/* Logo */}
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            <Logo />
-          </Box>
+          {/* Logo on mobile */}
+          {isMobile && (
+            <Box sx={{ flexGrow: 1 }}>
+              <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>
+                Cuisine Compass
+              </Typography>
+            </Box>
+          )}
+
+          {/* Logo on desktop */}
+          {!isMobile && (
+            <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+              <Logo />
+            </Box>
+          )}
 
           {/* Desktop Navigation */}
           <Box
@@ -283,7 +300,11 @@ const MainLayout = () => {
         }}
         sx={{
           display: { xs: "block", md: "none" },
-          "& .MuiDrawer-paper": { boxSizing: "border-box", width: 250 },
+          "& .MuiDrawer-paper": {
+            boxSizing: "border-box",
+            width: DRAWER_WIDTH,
+            boxShadow: 3,
+          },
         }}
       >
         {drawer}
@@ -296,7 +317,7 @@ const MainLayout = () => {
           display: { xs: "none", md: "block" },
           "& .MuiDrawer-paper": {
             boxSizing: "border-box",
-            width: 250,
+            width: DRAWER_WIDTH,
             borderRight: "none",
           },
         }}
@@ -310,18 +331,29 @@ const MainLayout = () => {
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
-          width: { md: `calc(100% - 250px)` },
-          ml: { md: "250px" },
+          width: "100%",
+          px: { xs: 1, sm: 2, md: 3 },
+          ml: { md: `${DRAWER_WIDTH}px` },
           mt: "64px", // Height of the AppBar
+          maxWidth: "100%",
+          overflowX: "hidden",
         }}
       >
-        <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Container
+          maxWidth="lg"
+          disableGutters
+          sx={{
+            py: 4,
+            px: { xs: 1, sm: 2 },
+            width: "100%",
+            overflow: "hidden",
+          }}
+        >
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            style={{ height: "100%" }}
+            style={{ width: "100%", overflowX: "hidden" }}
           >
             <Outlet />
           </motion.div>
