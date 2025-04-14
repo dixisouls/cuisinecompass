@@ -303,21 +303,19 @@ const Dashboard = () => {
                 <Typography variant="h6" sx={{ mb: 2 }}>
                   Target Macros
                 </Typography>
-                <Box sx={{ height: 180, width: "100%" }}>
+                <Box sx={{ height: 140, width: "100%" }}>
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
                         data={macroData}
                         cx="50%"
                         cy="50%"
-                        innerRadius={50}
-                        outerRadius={70}
+                        innerRadius={40}
+                        outerRadius={60}
                         paddingAngle={2}
                         dataKey="value"
                         labelLine={false}
-                        label={({ name, percent }) =>
-                          `${name} ${(percent * 100).toFixed(0)}%`
-                        }
+                        // Remove labels from pie chart to prevent overlap
                       >
                         {macroData.map((entry, index) => (
                           <Cell
@@ -337,6 +335,44 @@ const Dashboard = () => {
                       />
                     </PieChart>
                   </ResponsiveContainer>
+                </Box>
+
+                {/* Add separate macro info display below chart */}
+                <Box
+                  sx={{
+                    mt: 2,
+                    display: "flex",
+                    justifyContent: "space-around",
+                    width: "100%",
+                  }}
+                >
+                  {macroData.map((entry, index) => (
+                    <Box
+                      key={`macro-${index}`}
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        width: "33%",
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          width: 12,
+                          height: 12,
+                          borderRadius: "50%",
+                          bgcolor: MACRO_COLORS[index],
+                          mb: 0.5,
+                        }}
+                      />
+                      <Typography variant="body2" color="text.secondary">
+                        {entry.name}
+                      </Typography>
+                      <Typography variant="h6" fontWeight={700}>
+                        {entry.value}%
+                      </Typography>
+                    </Box>
+                  ))}
                 </Box>
               </Paper>
             </Grid>
